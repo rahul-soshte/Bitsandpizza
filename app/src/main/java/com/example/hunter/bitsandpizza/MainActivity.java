@@ -1,21 +1,21 @@
 package com.example.hunter.bitsandpizza;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ShareActionProvider;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.content.res.Configuration;
+import android.widget.ShareActionProvider;
 
 
 
@@ -25,7 +25,9 @@ public class MainActivity extends Activity {
     private String[] titles;
     private ListView drawerList;
 private DrawerLayout drawerLayout;
-private ActionBarDrawerToggle drawerToggle;
+private int currentPosition=0;
+
+    private ActionBarDrawerToggle drawerToggle;
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener{
         @Override
@@ -56,6 +58,8 @@ private ActionBarDrawerToggle drawerToggle;
     }
     private void selectItem(int position)
     {
+        currentPosition=position;
+
         Fragment fragment;
         switch (position)
         {
@@ -72,7 +76,7 @@ private ActionBarDrawerToggle drawerToggle;
 
         }
         FragmentTransaction ft=getFragmentManager().beginTransaction();
-        ft.replace(R.id.content_frame,fragment);
+        ft.replace(R.id.content_frame,fragment,"visible_fragment");
         ft.addToBackStack(null);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
@@ -96,8 +100,12 @@ private ActionBarDrawerToggle drawerToggle;
         drawerList.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_activated_1,titles));
 
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
-if(savedInstanceState==null);
+//Display the correct fragment
+        if(savedInstanceState!=null)
         {
+            currentPosition = savedInstanceState.getInt("position");
+            setActionBarTitle(currentPosition);
+        }else{
             selectItem(0);
         }
         //Create the Action Bar Toggle
@@ -116,6 +124,37 @@ if(savedInstanceState==null);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener()
+        {
+            public void onBackStackChanged()
+            {
+                FragmentManager fragMan=getFragmentManager();
+                Fragment fragment=fragMan.findFragmentByTag("visible_fragment");
+                if(fragment instanceof TopFragment)
+                {
+                    currentPosition=0;
+
+                }
+                if(fragment instanceof PizzaFragment)
+                {
+                    currentPosition=1;
+
+                }
+                if(fragment instanceof PastaFragment)
+                {
+                    currentPosition=2;
+
+                }
+                if(fragment instanceof StoresFragment)
+                {
+                    currentPosition=3;
+
+                }
+                setActionBarTitle(currentPosition);
+                drawerList.setItemChecked(currentPosition,true);
+
+            }
+        });
 
     }
 @Override
@@ -160,6 +199,13 @@ setIntent("this is example text");
         intent.putExtra(Intent.EXTRA_TEXT,text);
         shareActionProvider.setShareIntent(intent);
 
+
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt("position",currentPosition);
 
     }
     @Override
