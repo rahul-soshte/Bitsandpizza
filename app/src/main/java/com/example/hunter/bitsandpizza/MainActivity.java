@@ -63,7 +63,7 @@ private int currentPosition=0;
         Fragment fragment;
         switch (position)
         {
-            case 1:fragment = new PizzaFragment();
+            case 1:fragment = new PizzaMaterialFragment();
                 break;
             case 2:fragment=new PastaFragment();
                 break;
@@ -135,20 +135,17 @@ private int currentPosition=0;
                     currentPosition=0;
 
                 }
-                if(fragment instanceof PizzaFragment)
+                if(fragment instanceof PizzaMaterialFragment)
                 {
                     currentPosition=1;
-
                 }
                 if(fragment instanceof PastaFragment)
                 {
                     currentPosition=2;
-
                 }
                 if(fragment instanceof StoresFragment)
                 {
                     currentPosition=3;
-
                 }
                 setActionBarTitle(currentPosition);
                 drawerList.setItemChecked(currentPosition,true);

@@ -25,8 +25,9 @@
         <item>Pasta</item>
         <item>Stores</item>
     </string-array>
-<string name="open_drawer">Open Drawer</string>
+    <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_pizza_detail">PizzaDetail</string>
 </resources>
